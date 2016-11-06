@@ -8,12 +8,12 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.provider.Settings;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,7 +27,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.UnsupportedEncodingException;
-import java.lang.String;
 import java.lang.ref.WeakReference;
 import java.net.InetAddress;
 import java.util.ArrayList;
@@ -90,6 +89,9 @@ public class MainActivity extends AppCompatActivity {
                         wifi.setWifiEnabled(false);
                         break;
                     case R.id.switchConnect:
+                        if (socketClient.isConnected()) {
+                            socketClient.disconnect();
+                        }
                         editTextHostIP.setEnabled(true);
                         editTextPort.setEnabled(true);
                         switchConnect.setEnabled(true);
@@ -209,6 +211,7 @@ public class MainActivity extends AppCompatActivity {
         if (wifi.getWifiState() == WifiManager.WIFI_STATE_ENABLED) {
             switchWiFi.setChecked(true);
         }
+        //region bind Listener
         switchWiFi.setOnCheckedChangeListener(myCheckedChangeListener);
         switchConnect.setOnCheckedChangeListener(myCheckedChangeListener);
         buttonWiFiInfo.setOnClickListener(myClickListener);
@@ -220,6 +223,7 @@ public class MainActivity extends AppCompatActivity {
         imageButtonLeft.setOnClickListener(myClickListener);
         imageButtonRight.setOnClickListener(myClickListener);
         imageButtonFire.setOnClickListener(myClickListener);
+        //endregion
         socketClient = new SocketClient(handler, getApplicationContext());
     }
 
@@ -236,7 +240,7 @@ public class MainActivity extends AppCompatActivity {
             switch (msg.what) {
                 case 0x01://连接信息
                     Toast.makeText(mainActivity.getApplicationContext(), msg.obj.toString(), Toast.LENGTH_SHORT).show();
-                    if (!mainActivity.socketClient.isConnected) {
+                    if (!mainActivity.socketClient.isConnected()) {
                         mainActivity.editTextHostIP.setEnabled(true);
                         mainActivity.editTextPort.setEnabled(true);
                         mainActivity.switchConnect.setChecked(false);

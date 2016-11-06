@@ -15,19 +15,22 @@ import java.net.SocketTimeoutException;
 
 /**
  * Created by ALEX.DON.SCOFIELD on 2016/10/17.
+ * SocketClient
  */
 
-public class SocketClient {
+class SocketClient {
     private InetAddress hostIP;
     private int hostPort;
     private Socket client;
     private Handler clientHandler;
-    private ReceiveThread receiveThread = null;
     private Message msg;
     private byte[] sendBuffer = null;
-    private OutputStream outputStream = null;
-    boolean isConnected = false;
-    Context mainContext;
+
+    boolean isConnected() {
+        return (client.isConnected() && (!client.isClosed()));
+    }
+
+    private Context mainContext;
 
     SocketClient(Handler handler, Context context) {
         client = new Socket();
@@ -36,18 +39,28 @@ public class SocketClient {
         mainContext = context;
     }
 
-    public void connect(InetAddress ipAddress, int portNum) {
+    void connect(InetAddress ipAddress, int portNum) {
         hostIP = ipAddress;
         hostPort = portNum;
         new Thread(connectThread).start();
     }
 
-    public void send(byte[] buffer) {
+    void disconnect() {
+        if (isConnected()) {
+            try {
+                client.close();
+            } catch (IOException e) {
+                Log.e("Error", Log.getStackTraceString(e));
+            }
+        }
+    }
+
+    void send(byte[] buffer) {
         sendBuffer = buffer;
         new Thread(sendThread).start();
     }
 
-    Runnable connectThread = new Runnable() {
+    private Runnable connectThread = new Runnable() {
         @Override
         public void run() {
             Message msg = new Message();
@@ -55,9 +68,8 @@ public class SocketClient {
             msg.obj = mainContext.getString(R.string.msg_connectsuccess);
             try {
                 client = new Socket();
-                client.connect(new InetSocketAddress(hostIP, hostPort),1000);
-                isConnected = true;
-                receiveThread=new ReceiveThread(client);
+                client.connect(new InetSocketAddress(hostIP, hostPort), 1000);
+                ReceiveThread receiveThread = new ReceiveThread(client);
                 receiveThread.start();
             } catch (SocketTimeoutException e) {
                 Log.e("Error", Log.getStackTraceString(e));
@@ -69,16 +81,16 @@ public class SocketClient {
             clientHandler.sendMessage(msg);
         }
     };
-    Runnable sendThread = new Runnable() {
+    private Runnable sendThread = new Runnable() {
         @Override
         public void run() {
             try {
-                outputStream = client.getOutputStream();
+                OutputStream outputStream = client.getOutputStream();
                 outputStream.write(sendBuffer);
             } catch (IOException e) {
-                Message msg=new Message();
-                msg.what=0x01;
-                msg.obj=e.toString();
+                Message msg = new Message();
+                msg.what = 0x01;
+                msg.obj = e.toString();
                 clientHandler.sendMessage(msg);
                 Log.e("Error", Log.getStackTraceString(e));
             }
@@ -97,21 +109,26 @@ public class SocketClient {
                 Log.e("Error", Log.getStackTraceString(e));
             }
         }
+
         @Override
         public void run() {
-            while (isConnected) {
+            while (isConnected()) {
                 buffer = new byte[512];
                 try {
-                    inputStream.read(buffer);
-                    str = new String(buffer, "UTF-8").trim();
+                    if (inputStream.read(buffer) > 0)
+                        str = new String(buffer, "UTF-8").trim();
                 } catch (IOException e) {
                     Log.e("Error", Log.getStackTraceString(e));
+                    break;
                 }
-                Message msg=new Message();
-                msg.what=0x02;
-                msg.obj=str;
+                Message msg = new Message();
+                msg.what = 0x02;
+                msg.obj = str;
                 clientHandler.sendMessage(msg);
             }
+            msg.what = 0x01;
+            msg.obj = mainContext.getString(R.string.text_unconnected);
+            clientHandler.sendMessage(msg);
         }
     }
 }
