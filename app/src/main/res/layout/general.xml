@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="wrap_content"
+        android:layout_height="486dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true">
+
+        <Button
+            android:id="@+id/buttonWiFiInfo"
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:text="@string/text_info"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentStart="true" />
+
+        <Switch
+            android:id="@+id/switchWiFi"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@id/buttonWiFiInfo"
+            android:layout_alignParentEnd="true"
+            android:checked="false"
+            android:text="@string/text_wifi" />
+
+        <TextView
+            android:id="@+id/textViewName"
+            android:layout_width="140sp"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_alignBaseline="@id/buttonWiFiInfo"
+            android:textSize="18sp"/>
+
+        <TextView
+            android:id="@+id/textViewLocalIP"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/text_localip"
+            android:layout_alignBaseline="@+id/switchConnect"
+            android:layout_alignParentStart="true" />
+
+        <Switch
+            android:id="@+id/switchConnect"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:text="@string/text_connect"
+            android:layout_below="@+id/buttonWiFiInfo"
+            android:layout_alignParentEnd="true" />
+
+        <EditText
+            android:id="@+id/editTextPort"
+            android:labelFor="@id/editTextPort"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ems="3"
+            android:inputType="number"
+            android:layout_below="@+id/switchConnect"
+            android:layout_alignParentEnd="true" />
+
+        <TextView
+            android:id="@+id/textViewHostIP"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/text_serverip"
+            android:layout_alignParentStart="true"
+            android:layout_alignBaseline="@+id/editTextPort"/>
+
+        <EditText
+            android:id="@+id/editTextHostIP"
+            android:labelFor="@id/editTextHostIP"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="17dp"
+            android:inputType="text"
+            android:digits=".0123456789"
+            android:ems="8"
+            android:layout_toEndOf="@id/textViewHostIP"
+            android:layout_alignBaseline="@+id/editTextPort" />
+
+        <TextView
+            android:id="@+id/textViewPort"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/text_port"
+            android:layout_toStartOf="@id/editTextPort"
+            android:layout_alignBaseline="@+id/editTextPort" />
+
+        <EditText
+            android:id="@+id/editTextReceive"
+            android:labelFor="@id/editTextReceive"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textMultiLine"
+            android:gravity="start|top"
+            android:minLines="10"
+            android:text=""
+            android:textColor="#7c0101"
+            android:ems="10"
+            android:layout_marginTop="27dp"
+            android:layout_below="@+id/editTextHostIP"
+            android:layout_alignParentStart="true"
+            android:layout_alignEnd="@+id/buttonSend"
+            android:layout_above="@+id/editTextSend"
+            android:enabled="false" />
+
+        <EditText
+            android:id="@+id/editTextSend"
+            android:labelFor="@id/editTextSend"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textMultiLine"
+            android:text=""
+            android:ems="10"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentStart="true" />
+
+        <Button
+            android:text="@string/text_send"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/editTextSend"
+            android:layout_alignStart="@+id/editTextPort"
+            android:id="@+id/buttonSend" />
+
+</RelativeLayout>

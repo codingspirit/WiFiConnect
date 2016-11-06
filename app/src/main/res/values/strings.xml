@@ -1,0 +1,24 @@
+<resources>
+    <string name="app_name">WiFiConnect</string>
+    <string name="msg_wrong_ip">IP地址、端口错误</string>
+    <string name="msg_timeout">连接超时</string>
+    <string name="msg_connectfail">连接失败</string>
+    <string name="msg_connectsuccess">连接成功</string>
+    <string name="msg_receiveerror">接收数据错误</string>
+    <string name="text_info">连接信息</string>
+    <string name="text_wifi">WiFi</string>
+    <string name="text_localip">本地IP</string>
+    <string name="text_connect">连接</string>
+    <string name="text_serverip">服务器IP</string>
+    <string name="text_port">端口</string>
+    <string name="text_send">发送</string>
+    <string name="text_defaultport">2222</string>
+    <string name="text_unconnected">未连接</string>
+    <string name="text_general">全局</string>
+    <string name="text_remote">遥控器</string>
+    <string name="text_up">/UP/</string>
+    <string name="text_down">/DOWN/</string>
+    <string name="text_left">/LEFT/</string>
+    <string name="text_right">/RIGHT/</string>
+    <string name="text_fire">/FIRE/</string>
+</resources>
