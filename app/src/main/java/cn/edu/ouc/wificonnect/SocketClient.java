@@ -128,6 +128,7 @@ class SocketClient {
             }
             msg.what = 0x01;
             msg.obj = mainContext.getString(R.string.text_unconnected);
+            disconnect();
             clientHandler.sendMessage(msg);
         }
     }
