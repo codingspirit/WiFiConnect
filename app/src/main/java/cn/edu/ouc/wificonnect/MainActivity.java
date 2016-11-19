@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.wifi.WifiInfo;
@@ -41,7 +42,7 @@ public class MainActivity extends AppCompatActivity {
     WifiManager wifi;
     WifiInfo wifiInfo;
     InetAddress HostIP;
-    ImageButton imageButtonUp, imageButtonDown, imageButtonLeft, imageButtonRight, imageButtonFire;
+    ImageButton imageButtonUp, imageButtonDown, imageButtonLeft, imageButtonRight, imageButtonFire, imageButtonManual;
     int HostPort;
     EditText editTextPort, editTextHostIP, editTextReceive, editTextSend;
     ViewPager viewPager;
@@ -51,6 +52,7 @@ public class MainActivity extends AppCompatActivity {
     LayoutInflater mylayoutInflater;
     MyPagerAdapter myPagerAdapter;
     View pageGeneral, pageRemote;
+    boolean isManual = false;
 
     //region OnCheckedChangeListener
     final CompoundButton.OnCheckedChangeListener myCheckedChangeListener = new CompoundButton.OnCheckedChangeListener() {
@@ -161,6 +163,25 @@ public class MainActivity extends AppCompatActivity {
                         Log.e("Error", Log.getStackTraceString(e));
                     }
                     break;
+                case R.id.imageButtonManual:
+                    if (!isManual) {
+                        try {
+                            socketClient.send(getString(R.string.text_manual).getBytes("UTF-8"));
+                            isManual = true;
+                            imageButtonManual.setBackgroundColor(Color.parseColor("#6a0606"));
+                        } catch (UnsupportedEncodingException e) {
+                            Log.e("Error", Log.getStackTraceString(e));
+                        }
+                    } else {
+                        try {
+                            socketClient.send(getString(R.string.text_atuo).getBytes("UTF-8"));
+                            isManual = false;
+                            imageButtonManual.setBackgroundColor(Color.TRANSPARENT);
+                        } catch (UnsupportedEncodingException e) {
+                            Log.e("Error", Log.getStackTraceString(e));
+                        }
+                    }
+                    break;
                 //endregion
             }
         }
@@ -201,6 +222,7 @@ public class MainActivity extends AppCompatActivity {
         imageButtonLeft = (ImageButton) pageRemote.findViewById(R.id.imageButtonLeft);
         imageButtonRight = (ImageButton) pageRemote.findViewById(R.id.imageButtonRight);
         imageButtonFire = (ImageButton) pageRemote.findViewById(R.id.imageButtonFire);
+        imageButtonManual = (ImageButton) pageRemote.findViewById(R.id.imageButtonManual);
         //endregion
         IntentFilter filter = new IntentFilter();
         filter.addAction(WifiManager.NETWORK_STATE_CHANGED_ACTION);
@@ -223,6 +245,7 @@ public class MainActivity extends AppCompatActivity {
         imageButtonLeft.setOnClickListener(myClickListener);
         imageButtonRight.setOnClickListener(myClickListener);
         imageButtonFire.setOnClickListener(myClickListener);
+        imageButtonManual.setOnClickListener(myClickListener);
         //endregion
         socketClient = new SocketClient(handler, getApplicationContext());
     }

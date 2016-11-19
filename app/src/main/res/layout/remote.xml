@@ -67,4 +67,17 @@
         android:layout_alignStart="@+id/imageButtonDown"
         android:layout_marginStart="11dp"
         android:layout_marginBottom="27dp" />
+
+    <ImageButton
+        android:contentDescription="@string/text_manual"
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        android:scaleType="fitXY"
+        android:background="@drawable/selector"
+        android:rotation="90"
+        app:srcCompat="@drawable/manual"
+        android:id="@+id/imageButtonManual"
+        android:layout_marginEnd="9dp"
+        android:layout_alignTop="@+id/imageButtonFire"
+        android:layout_alignEnd="@+id/imageButtonUp" />
 </RelativeLayout>
