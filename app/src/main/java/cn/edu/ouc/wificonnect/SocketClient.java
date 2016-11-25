@@ -1,10 +1,13 @@
 package cn.edu.ouc.wificonnect;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -12,6 +15,7 @@ import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
+import java.util.zip.Inflater;
 
 /**
  * Created by ALEX.DON.SCOFIELD on 2016/10/17.
@@ -113,23 +117,64 @@ class SocketClient {
         @Override
         public void run() {
             while (isConnected()) {
-                buffer = new byte[512];
                 try {
-                    if (inputStream.read(buffer) > 0)
-                        str = new String(buffer, "UTF-8").trim();
+                    int dataLength = inputStream.available();
+                    if (dataLength > 0) {
+                        if (dataLength < 512) {
+                            buffer = new byte[dataLength];
+                            if (inputStream.read(buffer) > 0)
+                                str = new String(buffer, "UTF-8").trim();
+                            Message msg = new Message();
+                            msg.what = 0x02;
+                            msg.obj = str;
+                            clientHandler.sendMessage(msg);
+                        } else if (dataLength > 921653) {//long data such as picture
+                            Message msg = new Message();
+                            buffer = new byte[921654];
+                            if (inputStream.read(buffer) > 0) {
+                                //byte[] unzip = unZipByte(buffer);
+                                Bitmap bmp = BitmapFactory.decodeByteArray(buffer, 0, buffer.length);
+                                msg.what = 0x03;
+                                msg.obj = bmp;
+                                clientHandler.sendMessage(msg);
+                            }
+                        }
+                    }
                 } catch (IOException e) {
                     Log.e("Error", Log.getStackTraceString(e));
                     break;
                 }
-                Message msg = new Message();
-                msg.what = 0x02;
-                msg.obj = str;
-                clientHandler.sendMessage(msg);
             }
             msg.what = 0x01;
             msg.obj = mainContext.getString(R.string.text_unconnected);
             disconnect();
             clientHandler.sendMessage(msg);
         }
+    }
+
+    private byte[] unZipByte(byte[] data) {
+        Inflater decompresser = new Inflater();
+        decompresser.setInput(data);
+        byte result[] = new byte[0];
+        ByteArrayOutputStream o = new ByteArrayOutputStream(1);
+        try {
+            byte[] buf = new byte[102400];
+            int got;
+            while (!decompresser.finished()) {
+                got = decompresser.inflate(buf);
+                o.write(buf, 0, got);
+            }
+            result = o.toByteArray();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                o.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            decompresser.end();
+        }
+        return result;
     }
 }

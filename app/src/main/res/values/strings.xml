@@ -23,4 +23,5 @@
     <string name="text_fire">/FIRE/</string>
     <string name="text_manual">/MANUAL/</string>
     <string name="text_atuo">/AUTO/</string>
+    <string name="text_cam">Cam</string>
 </resources>

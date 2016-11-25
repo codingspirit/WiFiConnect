@@ -4,7 +4,9 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.Matrix;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.wifi.WifiInfo;
@@ -22,6 +24,7 @@ import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -43,6 +46,7 @@ public class MainActivity extends AppCompatActivity {
     WifiInfo wifiInfo;
     InetAddress HostIP;
     ImageButton imageButtonUp, imageButtonDown, imageButtonLeft, imageButtonRight, imageButtonFire, imageButtonManual;
+    ImageView imageViewCam;
     int HostPort;
     EditText editTextPort, editTextHostIP, editTextReceive, editTextSend;
     ViewPager viewPager;
@@ -223,6 +227,7 @@ public class MainActivity extends AppCompatActivity {
         imageButtonRight = (ImageButton) pageRemote.findViewById(R.id.imageButtonRight);
         imageButtonFire = (ImageButton) pageRemote.findViewById(R.id.imageButtonFire);
         imageButtonManual = (ImageButton) pageRemote.findViewById(R.id.imageButtonManual);
+        imageViewCam = (ImageView) pageRemote.findViewById(R.id.imageViewCam);
         //endregion
         IntentFilter filter = new IntentFilter();
         filter.addAction(WifiManager.NETWORK_STATE_CHANGED_ACTION);
@@ -273,8 +278,17 @@ public class MainActivity extends AppCompatActivity {
                 case 0x02://收到消息
                     mainActivity.editTextReceive.append(msg.obj.toString() + "\n");
                     break;
+                case 0x03://长数据包
+                    mainActivity.imageViewCam.setImageBitmap(rotateBitmap(((Bitmap) msg.obj), 90));
+                    break;
             }
         }
+    }
+
+    private static Bitmap rotateBitmap(Bitmap bitmap, float angle) {
+        Matrix matrix = new Matrix();
+        matrix.postRotate(angle);
+        return Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
     }
 }
 

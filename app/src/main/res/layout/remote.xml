@@ -3,81 +3,93 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#e5008720" >
+    android:background="#e5008720">
 
-    <ImageButton
-        android:contentDescription="@string/text_left"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        app:srcCompat="@drawable/arrow"
-        android:id="@+id/imageButtonLeft"
-        android:scaleType="fitXY"
-        android:background="@drawable/selector"
-        android:rotation="-90"
-        android:layout_marginTop="23dp"
+    <ImageView
+        android:id="@+id/imageViewCam"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:layout_alignStart="@+id/imageButtonRight" />
+        android:background="#e5008720"
+        android:scaleType="fitXY"
+    android:contentDescription="@string/text_cam" />
 
     <ImageButton
-        android:contentDescription="@string/text_down"
+        android:id="@+id/imageButtonLeft"
         android:layout_width="100dp"
         android:layout_height="100dp"
-        app:srcCompat="@drawable/arrow"
+        android:layout_alignParentTop="true"
+        android:layout_alignStart="@+id/imageButtonRight"
+        android:layout_marginTop="23dp"
+        android:background="@drawable/selector"
+        android:contentDescription="@string/text_left"
+        android:rotation="-90"
+        android:scaleType="fitXY"
+        app:srcCompat="@drawable/arrow" />
+
+    <ImageButton
         android:id="@+id/imageButtonDown"
-        android:scaleType="fitXY"
-        android:background="@drawable/selector"
-        android:rotation="180"
-        android:layout_marginStart="31dp"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
         android:layout_above="@+id/imageButtonRight"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="31dp"
+        android:background="@drawable/selector"
+        android:contentDescription="@string/text_down"
+        android:rotation="180"
+        android:scaleType="fitXY"
+        app:srcCompat="@drawable/arrow" />
 
     <ImageButton
-        android:contentDescription="@string/text_up"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        app:srcCompat="@drawable/arrow"
         android:id="@+id/imageButtonUp"
-        android:scaleType="fitXY"
-        android:background="@drawable/selector"
-        android:layout_below="@+id/imageButtonLeft"
-        android:layout_toEndOf="@+id/imageButtonLeft" />
-
-    <ImageButton
-        android:contentDescription="@string/text_right"
         android:layout_width="100dp"
         android:layout_height="100dp"
-        app:srcCompat="@drawable/arrow"
-        android:id="@+id/imageButtonRight"
-        android:scaleType="fitXY"
+        android:layout_below="@+id/imageButtonLeft"
+        android:layout_toEndOf="@+id/imageButtonLeft"
         android:background="@drawable/selector"
-        android:rotation="90"
-        android:layout_below="@+id/imageButtonUp"
-        android:layout_toEndOf="@+id/imageButtonDown" />
+        android:contentDescription="@string/text_up"
+        android:scaleType="fitXY"
+        app:srcCompat="@drawable/arrow" />
 
     <ImageButton
-        android:contentDescription="@string/text_fire"
+        android:id="@+id/imageButtonRight"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_below="@+id/imageButtonUp"
+        android:layout_toEndOf="@+id/imageButtonDown"
+        android:background="@drawable/selector"
+        android:contentDescription="@string/text_right"
+        android:rotation="90"
+        android:scaleType="fitXY"
+        app:srcCompat="@drawable/arrow" />
+
+    <ImageButton
+        android:id="@+id/imageButtonFire"
         android:layout_width="120dp"
         android:layout_height="120dp"
-        android:scaleType="fitXY"
-        android:background="@drawable/selector"
-        android:rotation="90"
-        app:srcCompat="@drawable/fire"
-        android:id="@+id/imageButtonFire"
         android:layout_alignParentBottom="true"
         android:layout_alignStart="@+id/imageButtonDown"
+        android:layout_marginBottom="27dp"
         android:layout_marginStart="11dp"
-        android:layout_marginBottom="27dp" />
+        android:background="@drawable/selector"
+        android:contentDescription="@string/text_fire"
+        android:rotation="90"
+        android:scaleType="fitXY"
+        app:srcCompat="@drawable/fire" />
 
     <ImageButton
-        android:contentDescription="@string/text_manual"
+        android:id="@+id/imageButtonManual"
         android:layout_width="120dp"
         android:layout_height="120dp"
-        android:scaleType="fitXY"
-        android:background="@drawable/selector"
-        android:rotation="90"
-        app:srcCompat="@drawable/manual"
-        android:id="@+id/imageButtonManual"
-        android:layout_marginEnd="9dp"
+        android:layout_alignEnd="@+id/imageButtonUp"
         android:layout_alignTop="@+id/imageButtonFire"
-        android:layout_alignEnd="@+id/imageButtonUp" />
+        android:layout_marginEnd="9dp"
+        android:background="@drawable/selector"
+        android:contentDescription="@string/text_manual"
+        android:rotation="90"
+        android:scaleType="fitXY"
+        app:srcCompat="@drawable/manual" />
+
+
 </RelativeLayout>
