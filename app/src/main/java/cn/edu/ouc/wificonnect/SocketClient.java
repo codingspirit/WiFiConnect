@@ -103,7 +103,10 @@ class SocketClient {
 
     private class ReceiveThread extends Thread {
         private InputStream inputStream = null;
-        private byte[] buffer;
+        final int competeLength = 921654;
+        private byte[] buffer = new byte[1024];
+        private byte[] frame = new byte[competeLength];
+        private int ptr = 0;
         private String str = null;
 
         ReceiveThread(Socket s) {
@@ -120,23 +123,27 @@ class SocketClient {
                 try {
                     int dataLength = inputStream.available();
                     if (dataLength > 0) {
-                        if (dataLength < 512) {
-                            buffer = new byte[dataLength];
+                        if (dataLength < 1024 && ptr == 0) {
                             if (inputStream.read(buffer) > 0)
                                 str = new String(buffer, "UTF-8").trim();
                             Message msg = new Message();
                             msg.what = 0x02;
                             msg.obj = str;
                             clientHandler.sendMessage(msg);
-                        } else if (dataLength > 921653) {//long data such as picture
-                            Message msg = new Message();
-                            buffer = new byte[921654];
-                            if (inputStream.read(buffer) > 0) {
-                                //byte[] unzip = unZipByte(buffer);
-                                Bitmap bmp = BitmapFactory.decodeByteArray(buffer, 0, buffer.length);
+                        } else if (dataLength >= 1024) {//long data such as picture
+                            if (ptr < competeLength) {
+                                if ((ptr + dataLength) < competeLength)
+                                    ptr += inputStream.read(frame, ptr, dataLength);
+                                else
+                                    ptr += inputStream.read(frame, ptr, competeLength - ptr);
+                            } else {
+                                Message msg = new Message();
+                                //byte[] unzip = unZipByte(frame);
+                                Bitmap bmp = BitmapFactory.decodeByteArray(frame, 0, frame.length);
                                 msg.what = 0x03;
                                 msg.obj = bmp;
                                 clientHandler.sendMessage(msg);
+                                ptr = 0;
                             }
                         }
                     }
