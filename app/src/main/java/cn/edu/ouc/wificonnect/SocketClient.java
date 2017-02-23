@@ -103,9 +103,11 @@ class SocketClient {
 
     private class ReceiveThread extends Thread {
         private InputStream inputStream = null;
-        final int competeLength = 921654;
+        int competeLength = 0;
+        private byte[] smallbuffer = new byte[8];
         private byte[] buffer = new byte[1024];
-        private byte[] frame = new byte[competeLength];
+        private byte[] frame;
+        private int packageType = 0;//0==not found 1==string 2==image
         private int ptr = 0;
         private String str = null;
 
@@ -123,14 +125,30 @@ class SocketClient {
                 try {
                     int dataLength = inputStream.available();
                     if (dataLength > 0) {
-                        if (dataLength < 1024 && ptr == 0) {
-                            if (inputStream.read(buffer) > 0)
+                        if (packageType == 0) {
+                            if (inputStream.read(smallbuffer) == 8) {
+                                str = new String(smallbuffer, "UTF-8").trim();
+                                if (str.contains("#!#")) {
+                                    competeLength = Integer.parseInt(str.replaceAll("#!#", ""));
+                                    if (competeLength > 1000) {
+                                        packageType = 2;
+                                        frame = new byte[competeLength];
+                                    } else if (competeLength > 0) {
+                                        packageType = 1;
+                                        competeLength = 0;
+                                    }
+                                }
+                            }
+                        } else if (packageType == 1) {//string
+                            if (inputStream.read(buffer) > 0) {
                                 str = new String(buffer, "UTF-8").trim();
-                            Message msg = new Message();
-                            msg.what = 0x02;
-                            msg.obj = str;
-                            clientHandler.sendMessage(msg);
-                        } else if (dataLength >= 1024) {//long data such as picture
+                                Message msg = new Message();
+                                msg.what = 0x02;
+                                msg.obj = str;
+                                packageType = 0;
+                                clientHandler.sendMessage(msg);
+                            }
+                        } else if (packageType == 2) {//image
                             if (ptr < competeLength) {
                                 if ((ptr + dataLength) < competeLength)
                                     ptr += inputStream.read(frame, ptr, dataLength);
@@ -143,7 +161,9 @@ class SocketClient {
                                 msg.what = 0x03;
                                 msg.obj = bmp;
                                 clientHandler.sendMessage(msg);
+                                packageType = 0;
                                 ptr = 0;
+                                competeLength = 0;
                             }
                         }
                     }
